@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SVVV University ERP Portal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --navy: #12254a;
+        --navy2: #1d3a72;
+        --gold: #b8923a;
+        --bg: #f3f4f6;
+        --card: #fff;
+        --ink: #1b2333;
+        --mute: #5d6678;
+        --line: #dfe3ea;
+        --ok: #1d7a4d;
+        --bad: #b3322e;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #0e1424;
+          --card: #161e33;
+          --ink: #e8ecf5;
+          --mute: #9aa5bd;
+          --line: #2a3554;
+          --navy: #0b1630;
+          --gold: #d3ad55;
+          --ok: #4cc38a;
+          --bad: #ff7b72;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #0e1424;
+        --card: #161e33;
+        --ink: #e8ecf5;
+        --mute: #9aa5bd;
+        --line: #2a3554;
+        --navy: #0b1630;
+        --gold: #d3ad55;
+        --ok: #4cc38a;
+        --bad: #ff7b72;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          15px/1.5 "IBM Plex Sans",
+          system-ui,
+          sans-serif;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: "Source Serif 4", Georgia, serif;
+        margin: 0 0 0.4em;
+        line-height: 1.2;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      :focus-visible {
+        outline: 2px solid var(--gold);
+        outline-offset: 2px;
+      }
+      .btn {
+        background: var(--navy2);
+        color: #fff;
+        border: 0;
+        border-radius: 6px;
+        padding: 0.5em 1em;
+        cursor: pointer;
+      }
+      .btn.gold {
+        background: var(--gold);
+        color: #111;
+      }
+      .btn.ghost {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--line);
+      }
+      .btn.sm {
+        padding: 0.25em 0.6em;
+        font-size: 13px;
+      }
+      input,
+      select {
+        background: var(--card);
+        color: var(--ink);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 0.45em 0.6em;
+        max-width: 100%;
+      }
+      .hero {
+        min-height: 88vh;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem 6vw 3rem;
+        text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
+        background:
+          linear-gradient(
+            180deg,
+            rgba(11, 22, 48, 0.15),
+            rgba(11, 22, 48, 0.2) 45%,
+            rgba(11, 22, 48, 0.88)
+          ),
+          url(campus.jpg) center 35% / cover;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: auto;
+        font-weight: 600;
+      }
+      .mono {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        background: var(--gold);
+        color: #111;
+        font:
+          700 22px "Source Serif 4",
+          serif;
+        border-radius: 4px;
+        text-shadow: none;
+      }
+      .hero h1 {
+        font-size: clamp(2rem, 6vw, 3.8rem);
+        max-width: 15ch;
+      }
+      .hero p {
+        max-width: 52ch;
+      }
+      .logins {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-top: 1.4rem;
+        max-width: 760px;
+      }
+      .logins button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        color: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: left;
+      }
+      .logins button:hover {
+        background: var(--gold);
+        color: #111;
+      }
+      .wrap {
+        padding: 1.5rem 6vw;
+      }
+      .grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 1rem;
+      }
+      .app {
+        display: grid;
+        grid-template-columns: 230px 1fr;
+        min-height: 100vh;
+      }
+      .side {
+        background: var(--navy);
+        color: #cfd8ec;
+        padding: 1rem 0.6rem;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: auto;
+      }
+      .side b {
+        color: #fff;
+        display: block;
+        padding: 0.2rem 0.6rem 1rem;
+      }
+      .side button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: 0;
+        color: inherit;
+        padding: 0.55rem 0.7rem;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .side button.on {
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+        border-left: 3px solid var(--gold);
+      }
+      .top {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.8rem 1.5rem;
+        background: var(--card);
+        border-bottom: 1px solid var(--line);
+      }
+      .main {
+        padding: 1.2rem 1.5rem;
+      }
+      .stat {
+        font:
+          700 2rem "Source Serif 4",
+          serif;
+      }
+      .mute {
+        color: var(--mute);
+        font-size: 13px;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin: 0.5rem 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.5rem;
+        border-bottom: 1px solid var(--line);
+        font-size: 14px;
+      }
+      .sc {
+        overflow-x: auto;
+      }
+      .pill {
+        padding: 0.1em 0.6em;
+        border-radius: 99px;
+        font-size: 12px;
+        border: 1px solid currentColor;
+      }
+      .ok {
+        color: var(--ok);
+      }
+      .bad {
+        color: var(--bad);
+      }
+      .bar {
+        height: 8px;
+        background: var(--line);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .bar i {
+        display: block;
+        height: 100%;
+      }
+      #toast {
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--navy);
+        color: #fff;
+        padding: 0.6rem 1rem;
+        border-radius: 6px;
+        display: none;
+        z-index: 9;
+      }
+      @media (max-width: 760px) {
+        .app {
+          grid-template-columns: 1fr;
+        }
+        .side {
+          position: static;
+          height: auto;
+          display: flex;
+          overflow-x: auto;
+        }
+        .side b {
+          display: none;
+        }
+        .side button {
+          width: auto;
+          white-space: nowrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div id="toast" role="status"></div>
+    <script>
+      const $ = (s) => document.querySelector(s),
+        esc = (s) =>
+          String(s ?? "").replace(
+            /[&<>"]/g,
+            (c) =>
+              ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+          );
+      const SUBJ = [
+          "Data Structures",
+          "Operating Systems",
+          "DBMS",
+          "Mathematics III",
+          "Software Engg",
+        ],
+        ST = {
+          P: "Present",
+          A: "Absent",
+          L: "Approved leave",
+          PENDING: "Pending verification",
+        };
+      let tok = sessionStorage.getItem("t"),
+        me = null,
+        tab = "dash",
+        qs = null,
+        stream = null,
+        photoBlob = null,
+        theme = null;
+      const toast = (m) => {
+        const t = $("#toast");
+        t.textContent = m;
+        t.style.display = "block";
+        clearTimeout(toast.h);
+        toast.h = setTimeout(() => (t.style.display = "none"), 2800);
+      };
+      async function api(p, o = {}) {
+        const h = {};
+        if (tok) h.Authorization = "Bearer " + tok;
+        let b = o.body;
+        if (b && !(b instanceof FormData)) {
+          h["Content-Type"] = "application/json";
+          b = JSON.stringify(b);
+        }
+        const r = await fetch("/api" + p, {
+            method: o.method || (b ? "POST" : "GET"),
+            headers: h,
+            body: b,
+          }),
+          j = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          if (r.status == 401 && tok && p != "/login") out();
+          throw new Error(
+            typeof j.detail == "string"
+              ? j.detail
+              : "Check the entered details.",
+          );
+        }
+        return j;
+      }
+      const act = async (f) => {
+        try {
+          await f();
+        } catch (e) {
+          toast(e.message);
+        }
+      };
+      const tbl = (h, r) =>
+        `<div class="sc"><table><thead><tr>${h.map((x) => `<th>${x}</th>`).join("")}</tr></thead><tbody>${r.map((x) => `<tr>${x.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+      const bar = (p) =>
+        `<div class="bar"><i style="width:${p}%;background:${p < 75 ? "var(--bad)" : "var(--ok)"}"></i></div>`;
+      const opts = (a) => a.map((x) => `<option>${x}</option>`).join("");
+      function landing() {
+        $("#root").innerHTML =
+          `<section class="hero"><div class="brand"><span class="mono">S</span><span>Shri Vaishnav Vidyapeeth Vishwavidyalaya<br><small style="font-weight:400">Indore, Madhya Pradesh</small></span></div><h1>Welcome to SVVV University ERP Portal</h1><p>Attendance, assignments, timetables and student support in one place.</p>
+<div class="logins">${[
+            ["student", "Student login", "Enrollment no."],
+            ["faculty", "Faculty login", "Employee ID"],
+            ["admin", "Admin login", "Administrator"],
+          ]
+            .map(
+              (x) =>
+                `<button onclick="showLogin('${x[0]}')"><b>${x[1]}</b><br><small>${x[2]}</small></button>`,
+            )
+            .join(
+              "",
+            )}</div></section><div class="wrap"><h2>Notices</h2><p class="mute">Sign in to see university notices.</p></div>`;
+      }
+      function showLogin(r) {
+        const d = {
+          student: ["SVVV2201", "student123"],
+          faculty: ["FAC101", "faculty123"],
+          admin: ["admin", "admin123"],
+        }[r];
+        $("#root").innerHTML =
+          `<div class="wrap" style="max-width:420px;margin:8vh auto"><div class="card"><h2>Sign in as ${r}</h2><div class="row"><input id="u" value="${d[0]}" style="width:100%"><input id="p" type="password" value="${d[1]}" style="width:100%"></div><div class="row"><button class="btn" onclick="act(()=>login('${r}'))">Sign in</button><button class="btn ghost" onclick="landing()">Back</button></div><p class="mute">Demo accounts are pre-filled. Students SVVV2201 to 2204, faculty FAC101 to 104.</p></div></div>`;
+      }
+      async function login(r) {
+        const j = await api("/login", {
+          body: { id: $("#u").value, password: $("#p").value },
+        });
+        if (j.user.role != r)
+          throw new Error("This account is not a " + r + " account.");
+        tok = j.token;
+        sessionStorage.setItem("t", tok);
+        me = j.user;
+        tab = "dash";
+        app();
+      }
+      function out() {
+        tok = me = null;
+        sessionStorage.removeItem("t");
+        stopCam();
+        landing();
+      }
+      const MENU = {
+        student: [
+          ["dash", "Dashboard"],
+          ["att", "Attendance"],
+          ["scan", "Scan QR"],
+          ["asg", "Assignments"],
+          ["tt", "Timetable"],
+          ["not", "Notices"],
+        ],
+        faculty: [
+          ["dash", "Dashboard"],
+          ["man", "Manual attendance"],
+          ["qr", "QR attendance"],
+          ["ph", "Photo attendance"],
+          ["asg", "Assignments"],
+          ["tt", "Timetable"],
+          ["an", "Analytics"],
+        ],
+        admin: [
+          ["dash", "Overview"],
+          ["stu", "Students"],
+          ["fac", "Faculty"],
+          ["ttm", "Timetable"],
+          ["tk", "Helpdesk"],
+          ["not", "Notices"],
+          ["an", "Analytics"],
+        ],
+      };
+      async function app() {
+        stopCam();
+        $("#root").innerHTML =
+          `<div class="app"><nav class="side"><b>SVVV ERP</b>${MENU[me.role].map(([k, l]) => `<button class="${tab == k ? "on" : ""}" onclick="tab='${k}';app()">${l}</button>`).join("")}</nav><div><div class="top"><span class="mute">${me.role} · ${esc(me.name)} (${esc(me.id)})</span><span class="row"><button class="btn ghost sm" onclick="theme=theme=='dark'?'light':'dark';document.documentElement.dataset.theme=theme">Theme</button><button class="btn sm" onclick="out()">Sign out</button></span></div><div class="main" id="v"></div></div></div>`;
+        try {
+          const f = V[me.role + ":" + tab];
+          $("#v").innerHTML = await f();
+        } catch (e) {
+          $("#v").innerHTML = `<p class="bad">${esc(e.message)}</p>`;
+        }
+      }
+      const reload = () => app();
+      async function stuTable() {
+        return (await api("/students")).map((s) => [
+          s.id,
+          esc(s.name),
+          s.dept,
+          s.sem,
+          s.section,
+          esc(s.email),
+        ]);
+      }
+      const V = {
+        async "student:dash"() {
+          const a = await api("/attendance/summary"),
+            o = Math.round(a.reduce((x, y) => x + y.percent, 0) / a.length),
+            n = await api("/notices");
+          return `<h2>Hello, ${esc(me.name.split(" ")[0])}</h2><p class="mute">${me.dept} · Semester ${me.sem} · Section ${me.section}</p><div class="card"><div class="stat">${o}%</div>Overall attendance${bar(o)}${o < 75 ? '<p class="bad">Below 75%. Attendance shortage alert.</p>' : ""}</div><br><div class="card"><h3>Latest notices</h3>${n
+            .slice(0, 3)
+            .map(
+              (x) =>
+                `<p>${x.urgent ? '<span class="pill bad">Urgent</span> ' : ""}${esc(x.text)} <span class="mute">${x.date}</span></p>`,
+            )
+            .join("")}</div>`;
+        },
+        async "student:att"() {
+          const a = await api("/attendance/summary");
+          return `<h2>Attendance</h2><div class="card">${a.map((x) => `<div class="row" style="justify-content:space-between"><span>${x.subject} <span class="mute">(${x.classes} classes)</span></span><b class="${x.percent < 75 ? "bad" : "ok"}">${x.percent}%</b></div>${bar(x.percent)}`).join("")}</div>`;
+        },
+        async "student:scan"() {
+          return `<h2>Scan QR</h2><div class="card"><div class="row"><button class="btn" onclick="act(camScan)">Open camera and scan</button><button class="btn ghost" onclick="stopCam()">Stop camera</button></div><video id="vid" playsinline muted style="display:none;max-width:100%;width:320px;border-radius:6px"></video><canvas id="cv" style="display:none"></canvas><p class="mute">Or enter the code shown on the classroom screen.</p><div class="row"><input id="code" maxlength="6" placeholder="Session code"><button class="btn" onclick="act(()=>scan($('#code').value))">Mark attendance</button></div></div>`;
+        },
+        async "student:asg"() {
+          const a = await api("/assignments");
+          return `<h2>Assignments</h2>${a.map((x) => `<div class="card" style="margin-bottom:10px"><b>${esc(x.title)}</b> <span class="mute">${x.subject} · due ${x.due} · ${x.max_marks} marks</span><div class="row">${x.submission ? `<span class="pill ok">Submitted: ${esc(x.submission.filename)}</span>${x.submission.marks != null ? `<b>${x.submission.marks}/${x.max_marks}</b> <span class="mute">${esc(x.submission.feedback)}</span>` : '<span class="mute">Awaiting evaluation</span>'}` : `<input type="file" id="f${x.id}" accept=".pdf,.docx,.pptx,.zip"><button class="btn sm" onclick="act(()=>submitA(${x.id}))">Submit</button>`}</div></div>`).join("") || '<p class="mute">No assignments yet.</p>'}`;
+        },
+        async "student:tt"() {
+          return ttView();
+        },
+        async "faculty:tt"() {
+          return ttView();
+        },
+        async "student:not"() {
+          return noticeList();
+        },
+        async "faculty:dash"() {
+          const s = await api("/students"),
+            a = await api("/assignments");
+          return `<h2>${esc(me.name)}</h2><div class="grid"><div class="card"><div class="stat">${s.length}</div>Students</div><div class="card"><div class="stat">${a.reduce((x, y) => x + y.submitted, 0)}</div>Submissions received</div></div>`;
+        },
+        async "faculty:man"() {
+          const s = await api("/students");
+          return `<h2>Manual attendance</h2><div class="row"><select id="sub">${opts(SUBJ)}</select><button class="btn ghost sm" onclick="document.querySelectorAll('.st').forEach(e=>e.value='P')">All present</button><button class="btn ghost sm" onclick="document.querySelectorAll('.st').forEach(e=>e.value='A')">All absent</button></div><div class="card">${tbl(
+            ["Student", "Status"],
+            s.map((x) => [
+              esc(x.name) + ` <span class="mute">${x.id}</span>`,
+              `<select class="st" data-id="${x.id}"><option value="P">Present</option><option value="A">Absent</option><option value="L">Approved leave</option></select>`,
+            ]),
+          )}</div><div class="row"><button class="btn gold" onclick="act(()=>sendAtt('/attendance/manual','.st',$('#sub').value))">Save and submit</button></div>`;
+        },
+        async "faculty:qr"() {
+          return `<h2>QR attendance</h2><div class="card"><div class="row"><select id="qsub">${opts(SUBJ)}</select><button class="btn" onclick="act(qrStart)">Start session</button><button class="btn ghost" onclick="act(qrEnd)">End session</button></div><div id="qbox"></div></div>`;
+        },
+        async "faculty:ph"() {
+          return `<h2>Photo-assisted attendance</h2><div class="card"><p class="mute">The server never marks anyone absent. Anyone it cannot verify stays pending until you confirm.</p><div class="row"><select id="psub">${opts(SUBJ)}</select><button class="btn" onclick="act(photoCam)">Open camera</button><button class="btn gold" onclick="snap()">Capture photo</button><input type="file" accept="image/*" id="pf" onchange="photoBlob=this.files[0];prev()"></div><video id="vid" playsinline muted style="display:none;max-width:100%;width:360px;border-radius:6px"></video><label><input type="checkbox" id="pc"> Students have consented to photo-based attendance</label><div class="row"><button class="btn" onclick="act(runPhoto)">Process photo</button></div><img id="pv" alt="Classroom photo" style="display:none;max-width:100%;max-height:220px;border-radius:6px"><div id="pbox"></div></div>`;
+        },
+        async "faculty:asg"() {
+          const a = await api("/assignments");
+          let rows = "";
+          for (const x of a) {
+            const s = await api(`/assignments/${x.id}/submissions`);
+            rows += s
+              .map((y) => [
+                esc(x.title),
+                y.student_id,
+                esc(y.filename),
+                `<input id="m${y.id}" type="number" max="${x.max_marks}" value="${y.marks ?? ""}" style="width:70px"> <input id="b${y.id}" value="${esc(y.feedback)}" placeholder="Feedback"> <button class="btn sm" onclick="act(()=>grade(${y.id}))">Save marks</button>`,
+              ])
+              .map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`)
+              .join("");
+          }
+          return `<h2>Assignments</h2><div class="card"><div class="row"><select id="as">${opts(SUBJ)}</select><input id="at" placeholder="Title"><input id="ad" type="date"><input id="am" type="number" placeholder="Max marks" style="width:110px"><button class="btn" onclick="act(newAsg)">Create</button></div></div><br><h3>Submissions</h3><div class="sc"><table><tbody>${rows || '<tr><td class="mute">No submissions yet.</td></tr>'}</tbody></table></div>`;
+        },
+        async "faculty:an"() {
+          return anView();
+        },
+        async "admin:an"() {
+          return anView();
+        },
+        async "admin:dash"() {
+          const s = await api("/stats");
+          return `<h2>University overview</h2><div class="grid"><div class="card"><div class="stat">${s.students}</div>Students</div><div class="card"><div class="stat">${s.faculty}</div>Faculty</div><div class="card"><div class="stat">${s.today_attendance ?? "–"}${s.today_attendance != null ? "%" : ""}</div>Today's attendance</div><div class="card"><div class="stat">${s.open_tickets}</div>Open tickets</div></div>`;
+        },
+        async "admin:stu"() {
+          return `<h2>Students</h2><div class="card"><div class="row"><input id="sn" placeholder="Full name"><select id="sd"><option>CSE</option><option>Mechanical</option><option>Management</option><option>Commerce</option></select><button class="btn" onclick="act(addStu)">Add student</button></div></div><br>${tbl(["ID", "Name", "Dept", "Semester", "Section", "Email"], await stuTable())}`;
+        },
+        async "admin:fac"() {
+          return `<h2>Faculty</h2>${tbl(
+            ["ID", "Name", "Dept", "Email"],
+            (await api("/faculty")).map((f) => [
+              f.id,
+              esc(f.name),
+              f.dept,
+              esc(f.email),
+            ]),
+          )}`;
+        },
+        async "admin:ttm"() {
+          return `<h2>Timetable management</h2><div class="card"><div class="row"><select id="td">${opts(["Mon", "Tue", "Wed", "Thu", "Fri"])}</select><select id="ts">${opts(["9:00", "10:00", "11:00", "12:00"])}</select><select id="tsub">${opts(SUBJ)}</select><input id="tf" value="FAC101" size="8"><input id="tr" value="B-204" size="6"><button class="btn" onclick="act(addTT)">Add lecture</button></div><p class="mute">Faculty and room clashes are checked on the server.</p></div><br>${await ttView(true)}`;
+        },
+        async "admin:tk"() {
+          return `<h2>Helpdesk</h2>${tbl(
+            ["ID", "Student", "Category", "Message", "Status"],
+            (await api("/tickets")).map((t) => [
+              t.id,
+              t.student_id,
+              esc(t.category),
+              esc(t.message),
+              `<select onchange="act(()=>api('/tickets/${t.id}',{method:'PATCH',body:{status:this.value}}).then(()=>toast('Status updated')))">${["Open", "In Progress", "Waiting for Student", "Resolved", "Closed"].map((x) => `<option ${x == t.status ? "selected" : ""}>${x}</option>`).join("")}</select>`,
+            ]),
+          )}`;
+        },
+        async "admin:not"() {
+          return `<h2>Publish notice</h2><div class="card"><div class="row"><input id="nt" placeholder="Notice text" style="flex:1"><label><input type="checkbox" id="nu"> Urgent</label><button class="btn gold" onclick="act(pubN)">Publish</button></div></div><br>${await noticeList()}`;
+        },
+      };
+      async function noticeList() {
+        return `<h2>Notices</h2>${(await api("/notices")).map((n) => `<div class="card" style="margin-bottom:8px">${n.urgent ? '<span class="pill bad">Urgent</span> ' : ""}${esc(n.text)} <span class="mute">${n.date}</span></div>`).join("")}`;
+      }
+      async function ttView(noTitle) {
+        const t = await api("/timetable"),
+          m = me.role == "faculty" ? t.filter((x) => x.faculty_id == me.id) : t;
+        return (
+          (noTitle ? "" : "<h2>Timetable</h2>") +
+          `<div class="card">${tbl(
+            ["Day", "Slot", "Subject", "Faculty", "Room"],
+            m.map((x) => [x.day, x.slot, x.subject, esc(x.faculty), x.room]),
+          )}</div>`
+        );
+      }
+      async function anView() {
+        const a = await api("/analytics");
+        return `<h2>Academic analytics</h2><p class="mute">Advisory only. Based on attendance data; nothing is changed automatically.</p><div class="grid"><div class="card"><h3>Students who may need support</h3>${a.low_attendance.map((x) => `<p>${esc(x.name)}: <b class="bad">${x.percent}%</b></p>`).join("") || "<p>No one below 75%.</p>"}</div><div class="card"><h3>Subject averages</h3>${a.subjects.map((x) => `<p>${x.subject}: <b>${x.average}%</b></p>`).join("")}</div></div>`;
+      }
+      async function sendAtt(path, sel, subject) {
+        const records = [...document.querySelectorAll(sel)].map((e) => ({
+          student_id: e.dataset.id,
+          status: e.value,
+        }));
+        await api(path, { body: { subject, records } });
+        toast("Attendance saved.");
+      }
+      async function openCam() {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+        });
+        const v = $("#vid");
+        v.srcObject = stream;
+        v.style.display = "block";
+        await v.play();
+      }
+      function stopCam() {
+        stream?.getTracks().forEach((t) => t.stop());
+        stream = null;
+        clearInterval(camScan.h);
+        clearInterval(qs?.h);
+        const v = $("#vid");
+        if (v) v.style.display = "none";
+      }
+      const camMsg =
+        "Camera could not open. Allow camera access (use http://localhost or https).";
+      async function camScan() {
+        try {
+          await openCam();
+        } catch (e) {
+          throw new Error(camMsg);
+        }
+        const v = $("#vid"),
+          cv = $("#cv"),
+          x = cv.getContext("2d");
+        camScan.h = setInterval(() => {
+          if (!v.videoWidth) return;
+          cv.width = v.videoWidth;
+          cv.height = v.videoHeight;
+          x.drawImage(v, 0, 0);
+          const r = jsQR(
+            x.getImageData(0, 0, cv.width, cv.height).data,
+            cv.width,
+            cv.height,
+          );
+          if (r && r.data.startsWith("SVVV|")) {
+            const t = r.data.split("|")[1];
+            stopCam();
+            act(() => scan(t));
+          }
+        }, 400);
+      }
+      async function scan(t) {
+        const j = await api("/qr/scan", { body: { token: t } });
+        toast("Attendance marked for " + j.subject);
+      }
+      async function qrStart() {
+        const j = await api("/qr/start", {
+          body: { subject: $("#qsub").value },
+        });
+        qs = { id: j.id, subject: j.subject };
+        drawQR(j.token, 0);
+        qs.h = setInterval(
+          () =>
+            act(async () => {
+              const r = await api(`/qr/${qs.id}/refresh`, { method: "POST" });
+              drawQR(r.token, r.count);
+            }),
+          20000,
+        );
+      }
+      async function qrEnd() {
+        if (!qs) return;
+        clearInterval(qs.h);
+        await api(`/qr/${qs.id}/end`, { method: "POST" });
+        qs = null;
+        $("#qbox").innerHTML = "";
+        toast("Session ended.");
+      }
+      function drawQR(t, n) {
+        $("#qbox").innerHTML =
+          `<div class="row"><div id="qrc" style="background:#fff;padding:8px;width:184px;height:184px"></div><div><div class="mute">Session code (changes every 20 s)</div><div class="stat">${t}</div><p>${n} student(s) marked present</p></div></div>`;
+        new QRCode($("#qrc"), { text: "SVVV|" + t, width: 168, height: 168 });
+      }
+      async function photoCam() {
+        try {
+          await openCam();
+        } catch (e) {
+          throw new Error(camMsg);
+        }
+      }
+      function prev() {
+        const p = $("#pv");
+        if (photoBlob) {
+          p.src = URL.createObjectURL(photoBlob);
+          p.style.display = "block";
+        }
+      }
+      function snap() {
+        const v = $("#vid");
+        if (!stream || !v.videoWidth) return toast("Open the camera first.");
+        const c = document.createElement("canvas");
+        c.width = v.videoWidth;
+        c.height = v.videoHeight;
+        c.getContext("2d").drawImage(v, 0, 0);
+        c.toBlob(
+          (b) => {
+            photoBlob = b;
+            prev();
+            stopCam();
+            toast("Photo captured.");
+          },
+          "image/jpeg",
+          0.85,
+        );
+      }
+      async function runPhoto() {
+        if (!photoBlob)
+          throw new Error("Capture or choose a classroom photo first.");
+        if (!$("#pc").checked)
+          throw new Error("Confirm student consent before processing.");
+        const f = new FormData();
+        f.append("photo", photoBlob, "class.jpg");
+        f.append("consent", "true");
+        const j = await api("/photo/process", { body: f });
+        $("#pbox").innerHTML =
+          tbl(
+            ["Student", "Suggestion"],
+            j.suggestions.map((s) => [
+              esc(s.name),
+              `<select class="ps" data-id="${s.student_id}">${Object.entries(ST)
+                .map(
+                  ([k, l]) =>
+                    `<option value="${k}" ${s.status == k ? "selected" : ""}>${l}</option>`,
+                )
+                .join("")}</select>`,
+            ]),
+          ) +
+          `<div class="row"><button class="btn gold" onclick="act(()=>sendAtt('/photo/confirm','.ps',$('#psub').value))">Confirm attendance</button></div>`;
+      }
+      async function submitA(id) {
+        const f = $("#f" + id).files[0];
+        if (!f) throw new Error("Choose a file first.");
+        const d = new FormData();
+        d.append("file", f);
+        await api(`/assignments/${id}/submit`, { body: d });
+        toast("Submitted.");
+        reload();
+      }
+      async function grade(id) {
+        await api(`/submissions/${id}/grade`, {
+          body: { marks: +$("#m" + id).value, feedback: $("#b" + id).value },
+        });
+        toast("Marks saved.");
+      }
+      async function newAsg() {
+        await api("/assignments", {
+          body: {
+            subject: $("#as").value,
+            title: $("#at").value,
+            due: $("#ad").value,
+            max_marks: +$("#am").value,
+          },
+        });
+        toast("Assignment created.");
+        reload();
+      }
+      async function addStu() {
+        await api("/students", {
+          body: { name: $("#sn").value, dept: $("#sd").value },
+        });
+        toast("Student added.");
+        reload();
+      }
+      async function addTT() {
+        await api("/timetable", {
+          body: {
+            day: $("#td").value,
+            slot: $("#ts").value,
+            subject: $("#tsub").value,
+            faculty_id: $("#tf").value,
+            room: $("#tr").value,
+          },
+        });
+        toast("Lecture added.");
+        reload();
+      }
+      async function pubN() {
+        await api("/notices", {
+          body: { text: $("#nt").value, urgent: $("#nu").checked },
+        });
+        toast("Published.");
+        reload();
+      }
+      (async () => {
+        if (tok) {
+          try {
+            me = await api("/me");
+            return app();
+          } catch (e) {}
+        }
+        landing();
+      })();
+    </script>
+  </body>
+</html>
